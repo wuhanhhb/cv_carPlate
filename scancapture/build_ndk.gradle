@@ -1,0 +1,102 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/'] } }
+
+    /**
+     * 下面是jni编译相关，如果你没有配置opencv，不要打开ndk编译,如果你想进行本地的ndk编译，请：
+     * 1 在gradle.properties中配置 ndkdir=你的ndk路径
+     * 2 修改Android.mk文件中opencv的路径，建议采用相同的版本不然可能编译会有问题
+     */
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs'
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+// call regular ndk-build(.cmd) script from app directory
+    task ndkBuild(type: Exec) {
+//        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine "$ndkdir/ndk-build.cmd", '-C', file('src/main/jni').absolutePath
+//        } else {
+//            commandLine 'ndk-build', '-C', file('src/main/jni').absolutePath
+//        }
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
+    //下面一段配置是为了兼容打包的，如果你开启了NDK本地编译，请注释掉
+//    task nativeLibsToJar(type: Zip, description: 'create a jar archive of the native libs') {
+//        destinationDir file("$buildDir/native-libs")
+//        baseName 'native-libs'
+//        extension 'jar'
+//        from fileTree(dir: 'src/main/libs', include: '**/*.so')
+//        into 'lib/'
+//    }
+//
+//    tasks.withType(JavaCompile) {
+//        compileTask -> compileTask.dependsOn(nativeLibsToJar)
+//    }
+}
+//下面一段配置是为了兼容打包的，如果你开启了NDK本地编译，请注释掉
+//dependencies {
+//    compile fileTree(dir: "$buildDir/native-libs", include: 'native-libs.jar')
+//}
+//正常依赖
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+}
+
+//next all add to bintray
+apply plugin: 'com.novoda.bintray-release'
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << "-Xlint:deprecation" << "-Xlint:unchecked"
+}
+
+publish {
+    userOrg = 'sxhebing'
+    groupId = 'com.cv'
+    artifactId = 'carplate'
+    publishVersion = '1.0.1'
+    desc = 'An Simple chinese Car Plate recognise libs,You can learn more from git '
+    website = 'https://github.com/wuhanhhb/cv_carPlate'
+    dryRun = false
+}
+
+task androidJavadocs(type: Javadoc) {
+    source = android.sourceSets.main.java.source
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    classifier = 'javadoc'
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.source
+}
+
+artifacts {
+    archives androidSourcesJar
+    archives androidJavadocsJar
+}
