@@ -4,7 +4,20 @@
 
 # how to Use it
     
-    compile 'com.cv:carplate:1.0.0'
+    compile 'com.cv:carplate:1.0.1'
+    
+code in activity:
+    
+    startActivityForResult(new Intent(this, ScanCaptureActivity.class), 0)
+    
+onActivityResult:
+
+    String scanCode = data == null ? null : data.getStringExtra("code");//Get result
+    Bitmap bmp = BitmapFactory.decodeFile( Environment.getExternalStorageDirectory().getAbsolutePath() + "/plate.jpg");//get bitmap
+    
+    
+more info see Simple Demo
+    
     
 # Ndk build
 
@@ -15,4 +28,3 @@ if you want to build it , you need:
     3   modified the ndk path on gradle.properties & local.properties
     4   run it~
     
-more info see Simple

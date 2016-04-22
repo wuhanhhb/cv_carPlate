@@ -95,36 +95,37 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" 
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:paddingTop="10dp"
-            android:paddingBottom="10dp"
+            android:background="#77000000"
             android:orientation="horizontal"
-            android:background="#77000000">
-            
-        <TextView
-            android:id="@+id/erweima"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="14sp" 
-            android:layout_weight="1"
-            android:drawableTop="@drawable/erweima_img_foucs"
-            android:drawablePadding="5dp"
-            android:text="二维码"
-            android:textColor="#ffffff"/>
-        
-        <TextView
-            android:id="@+id/tiaoxingma"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textSize="14sp" 
-            android:layout_weight="1"
-            android:drawableTop="@drawable/tiaoxingma_img_normal"
-            android:drawablePadding="5dp"
-            android:text="条形码"
-            android:textColor="#ffffff"/>
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/erweima"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="5dp"
+                android:drawableTop="@drawable/erweima_img_foucs"
+                android:gravity="center"
+                android:text="二维码"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tiaoxingma"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:drawablePadding="5dp"
+                android:drawableTop="@drawable/tiaoxingma_img_normal"
+                android:gravity="center"
+                android:text="条形码"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
         </LinearLayout>
 
     </FrameLayout>

@@ -76,7 +76,7 @@ publish {
     userOrg = 'sxhebing'
     groupId = 'com.cv'
     artifactId = 'carplate'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'An Simple chinese Car Plate recognise libs,You can learn more from git '
     website = 'https://github.com/wuhanhhb/cv_carPlate'
     dryRun = false

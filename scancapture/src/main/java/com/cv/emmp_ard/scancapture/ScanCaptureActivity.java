@@ -2,9 +2,7 @@ package com.cv.emmp_ard.scancapture;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -26,15 +24,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cv.emmp_ard.scan.camera.CameraManager;
+import com.cv.emmp_ard.scan.camera.FlashlightManager;
 import com.cv.emmp_ard.scan.decoding.CaptureActivityHandler;
+import com.cv.emmp_ard.scan.decoding.InactivityTimer;
+import com.cv.emmp_ard.scan.view.ViewfinderView;
 import com.cv.scancapture.R;
 import com.example.carplate.CarPlateDetection;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.cv.emmp_ard.scan.camera.CameraManager;
-import com.cv.emmp_ard.scan.camera.FlashlightManager;
-import com.cv.emmp_ard.scan.decoding.InactivityTimer;
-import com.cv.emmp_ard.scan.view.ViewfinderView;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -47,14 +45,13 @@ public class ScanCaptureActivity extends Activity implements Callback, SensorEve
     private boolean hasSurface;
     private Vector<BarcodeFormat> decodeFormats;
     private String characterSet;
-    private TextView txtResult, tilte, erweima, tiaoxingma;
+    private TextView txtResult, tilte;
     ImageView back;
     private InactivityTimer inactivityTimer;
     private MediaPlayer mediaPlayer;
     private boolean playBeep;
     private static final float BEEP_VOLUME = 0.10f;
     private boolean vibrate;
-    // ----@phj-------
     private Button openLigth;
     private Boolean LigthOpen = false;
 
@@ -83,13 +80,8 @@ public class ScanCaptureActivity extends Activity implements Callback, SensorEve
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mLightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);// TYPE_GRAVITY
-        final int type;
-        if (getIntent().hasExtra("index")) {
-            type = getIntent().getIntExtra("index", 3);
-        } else {
-            type = 4;
-        }
-        CarPlateDetection.TEST = type == 2;
+
+        CarPlateDetection.TEST = true;
         CarPlateDetection.copyXml(this);
 //        CarPlateDetection.sdpath = getIntent().getStringExtra("path");
         des = "scan car plate";
@@ -107,9 +99,6 @@ public class ScanCaptureActivity extends Activity implements Callback, SensorEve
         });
         tilte.setText("scan");
         txtResult = (TextView) findViewById(R.id.txtResult);
-        erweima = (TextView) findViewById(R.id.erweima);
-        tiaoxingma = (TextView) findViewById(R.id.tiaoxingma);
-//		tishiText = (TextView) findViewById(R.id.tishi_text);
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
 
@@ -128,48 +117,6 @@ public class ScanCaptureActivity extends Activity implements Callback, SensorEve
                     openLigth.setText("close flash light");
                 }
 
-            }
-        });
-        // -------------
-
-        erweima.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                des = "s";
-                Drawable foucs, normal;
-                Resources res = getResources();
-                foucs = res.getDrawable(R.drawable.erweima_img_foucs);
-                foucs.setBounds(0, 0, foucs.getMinimumWidth(),
-                        foucs.getMinimumHeight());
-                normal = res.getDrawable(R.drawable.tiaoxingma_img_normal);
-                normal.setBounds(0, 0, normal.getMinimumWidth(),
-                        normal.getMinimumHeight());
-                erweima.setCompoundDrawables(null, foucs, null, null);
-                tiaoxingma.setCompoundDrawables(null, normal, null, null);
-                CameraManager.get()
-                        .setScanMode(CameraManager.SCAN_MODEL.QRCODE);
-            }
-        });
-        tiaoxingma.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // TODO Auto-generated method stub
-                des = "s";
-                Drawable foucs, normal;
-                Resources res = getResources();
-                foucs = res.getDrawable(R.drawable.tiaoxingma_img_foucs);
-                foucs.setBounds(0, 0, foucs.getMinimumWidth(),
-                        foucs.getMinimumHeight());
-                normal = res.getDrawable(R.drawable.erweima_img_normal);
-                normal.setBounds(0, 0, normal.getMinimumWidth(),
-                        normal.getMinimumHeight());
-                erweima.setCompoundDrawables(null, normal, null, null);
-                tiaoxingma.setCompoundDrawables(null, foucs, null, null);
-                CameraManager.get().setScanMode(
-                        CameraManager.SCAN_MODEL.BARCODE);
             }
         });
     }
@@ -238,7 +185,6 @@ public class ScanCaptureActivity extends Activity implements Callback, SensorEve
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
-        Log.i("hx", "Calculated surfaceChanged;" + width + "," + height);
         CameraManager.get().setSurfaceSize(width, height);
     }
 
