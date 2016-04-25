@@ -23,7 +23,7 @@ more info see Simple Demo
 
 if you want to build it , you need:
 
-    1   install:OpenCV-2.4.10-android-sdk
+    1   install:OpenCV-2.4.10-android-sdk,and modified the opencv's path on Android.mk
     2   modified the scancapture's build.gradle(A simple way is replace it with build_ndk.gradle)
     3   modified the ndk path on gradle.properties & local.properties
     4   run it~
